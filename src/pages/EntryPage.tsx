@@ -1,10 +1,14 @@
 import { Link, useParams } from 'react-router-dom'
-import { EntryMeta } from '@/components/content/EntryMeta'
+import { EntryAxes } from '@/components/content/EntryAxes'
 import { MarkdownBody } from '@/components/content/MarkdownBody'
+import { NoteBody } from '@/components/content/NoteBody'
 import { RelatedEntries } from '@/components/content/RelatedEntries'
 import {
+  entryPath,
   getCollection,
   getEntry,
+  getOrphanExercises,
+  getParentNote,
   getRelated,
   isCollectionId,
 } from '@/lib/content'
@@ -24,18 +28,32 @@ export function EntryPage() {
   }
 
   const collection = getCollection(collectionId)
+  const parent = getParentNote(entry)
   const related = getRelated(entry)
+  const orphans = entry.collection === 'notes' ? getOrphanExercises(entry) : []
 
   return (
     <article className={styles.page}>
       <Link className={styles.back} to={collection.path}>
         ← {collection.title}
       </Link>
-      <EntryMeta entry={entry} collectionHref={collection.path} />
+      {parent ? (
+        <p className={styles.parent}>
+          Из темы:{' '}
+          <Link to={entryPath(parent)}>{parent.title}</Link>
+        </p>
+      ) : null}
+      <EntryAxes entry={entry} />
       <h1 className={styles.title}>{entry.title}</h1>
       <p className={styles.summary}>{entry.summary}</p>
-      <MarkdownBody source={entry.body} />
-      <RelatedEntries entries={related} />
+      {entry.collection === 'notes' ? (
+        <NoteBody source={entry.body} />
+      ) : (
+        <MarkdownBody source={entry.body} />
+      )}
+      <RelatedEntries
+        entries={[...orphans, ...related.filter((item) => !orphans.some((orphan) => orphan.id === item.id))]}
+      />
     </article>
   )
 }

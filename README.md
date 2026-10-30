@@ -7,11 +7,11 @@
 ## Стек
 
 - React 19 + TypeScript + Vite
-- React Router (клиентские маршруты)
-- База знаний: markdown с YAML-frontmatter в `content/`
+- React Router
+- База знаний: markdown в `content/notes` и `content/exercises`
 - GitHub Actions → GitHub Pages
 
-Отдельной базы данных нет. Приложение читает файлы на этапе сборки. Позже поверх тех же файлов можно посадить локальную CMS — слой `src/lib/content` для этого и отделён от UI.
+Отдельной базы данных нет. Позже поверх тех же файлов можно посадить локальную CMS.
 
 ## Локальный запуск
 
@@ -22,8 +22,6 @@ npm install
 npm run dev
 ```
 
-Сборка и проверка продакшен-бандла:
-
 ```bash
 npm run build
 npm run preview
@@ -31,52 +29,33 @@ npm run preview
 
 ## База знаний
 
-Заметки живут здесь:
-
 ```text
 content/
-  techniques/   приёмы
-  exercises/    упражнения
-  glossary/     словарь
-  articles/     статьи
+  notes/        темы / теория
+  exercises/    упражнения, вынесенные из тем
 ```
 
-Каждый файл — markdown. Вверху обязательны поля (это не строгий YAML: двоеточия в тексте можно не экранировать):
+Оси тегов (можно комбинировать в фильтрах):
 
-```yaml
----
-title: Показывать, а не рассказывать
-slug: show-dont-tell          # можно не писать: возьмётся имя файла
-summary: Коротко, зачем эта заметка.
-tags: [описание, сцена]
-category: сцена
-difficulty: beginner          # beginner | intermediate | advanced
-related:                      # id вида раздел/slug или просто slug
-  - exercises/gesture-instead-of-adjective
-order: 10
-draft: false                  # true — видно только в dev
----
+- `module` — модуль (главная полка)
+- `areas` — область
+- `tasks` — задача
+- `genres` — жанр
+- `stages` — этап работы
+
+В теме упражнение вставляется так:
+
+```text
+:::exercise slug-uprazhneniya:::
 ```
 
-Дальше обычный markdown. После сохранения страница обновляется в `npm run dev`.
+У файла упражнения поле `parent: notes/<slug-temy>`.
 
-Читает контент только `src/lib/content`. Страницы не импортируют файлы напрямую: когда понадобится CMS, меняется этот слой, а не весь UI.
+Читает контент только `src/lib/content`.
 
 ## GitHub Pages
 
-В репозитории уже есть workflow: `.github/workflows/pages.yml`.
+1. **Settings → Pages → Source:** GitHub Actions
+2. Пуш в `main`
 
-Один раз в настройках репозитория:
-
-1. **Settings → Pages → Build and deployment → Source:** GitHub Actions
-2. Запушьте `main`
-
-Actions соберёт сайт с `BASE_URL=/writing-craft/` и выложит артефакт. Для SPA после сборки копируется `404.html`, чтобы прямые ссылки вроде `/techniques/show-dont-tell` открывались.
-
-Если появится свой домен и корень сайта станет `/`, в workflow уберите `BASE_URL` или поставьте `/`.
-
-## Что дальше с CMS
-
-Сейчас правки — это правки файлов в `content/`. Этого достаточно, чтобы принять вашу папку с материалами и разложить её по полкам.
-
-Когда захочется редактировать базу локально в UI, разумный следующий шаг — **Keystatic** (или Decap CMS) поверх тех же markdown-файлов и того же frontmatter. Схему полей не придётся выдумывать заново: она уже зафиксирована в `src/lib/content/schema.ts`.
+Сборка идёт с `BASE_URL=/writing-craft/`. Для прямых ссылок SPA копируется `404.html`.

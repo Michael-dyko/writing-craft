@@ -73,11 +73,43 @@ export function asString(value: unknown): string | undefined {
 }
 
 export function asStringArray(value: unknown): string[] {
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+  }
   if (!Array.isArray(value)) return []
   return value
     .filter((item): item is string => typeof item === 'string')
     .map((item) => item.trim())
     .filter(Boolean)
+}
+
+export const EXERCISE_EMBED_RE = /:::exercise\s+([^\s:]+):::/g
+
+export function splitExerciseEmbeds(source: string): Array<
+  { type: 'markdown'; text: string } | { type: 'exercise'; slug: string }
+> {
+  const parts: Array<{ type: 'markdown'; text: string } | { type: 'exercise'; slug: string }> = []
+  const pattern = new RegExp(EXERCISE_EMBED_RE.source, 'g')
+  let last = 0
+  let match: RegExpExecArray | null
+  while ((match = pattern.exec(source))) {
+    const before = source.slice(last, match.index).trim()
+    if (before) parts.push({ type: 'markdown', text: before })
+    parts.push({ type: 'exercise', slug: match[1] })
+    last = match.index + match[0].length
+  }
+  const rest = source.slice(last).trim()
+  if (rest) parts.push({ type: 'markdown', text: rest })
+  return parts
+}
+
+export function embeddedExerciseSlugs(source: string): string[] {
+  return [...source.matchAll(new RegExp(EXERCISE_EMBED_RE.source, 'g'))].map(
+    (match) => match[1],
+  )
 }
 
 export function asNumber(value: unknown): number | undefined {

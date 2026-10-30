@@ -1,11 +1,4 @@
-import {
-  COLLECTION_IDS,
-  isCollectionId,
-  isDifficulty,
-  makeEntryId,
-  type CollectionId,
-  type ContentEntry,
-} from './schema'
+import { isCollectionId, makeEntryId, type CollectionId, type ContentEntry } from './schema'
 import {
   asBoolean,
   asNumber,
@@ -14,11 +7,18 @@ import {
   parseMarkdown,
 } from './parse'
 
-const sources = import.meta.glob('/content/**/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}) as Record<string, string>
+const sources = {
+  ...import.meta.glob('/content/notes/**/*.md', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  }),
+  ...import.meta.glob('/content/exercises/**/*.md', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  }),
+} as Record<string, string>
 
 export class ContentError extends Error {
   constructor(message: string) {
@@ -28,16 +28,14 @@ export class ContentError extends Error {
 }
 
 function parseSourcePath(filePath: string): { collection: CollectionId; fileSlug: string } {
-  const match = filePath.match(/\/content\/([^/]+)\/([^/]+)\.md$/)
+  const match = filePath.match(/\/content\/(notes|exercises)\/([^/]+)\.md$/)
   if (!match) {
     throw new ContentError(`Некорректный путь заметки: ${filePath}`)
   }
 
   const [, folder, fileSlug] = match
   if (!isCollectionId(folder)) {
-    throw new ContentError(
-      `Неизвестная коллекция «${folder}» в ${filePath}. Ожидаются: ${COLLECTION_IDS.join(', ')}`,
-    )
+    throw new ContentError(`Неизвестная коллекция «${folder}» в ${filePath}`)
   }
 
   return { collection: folder, fileSlug }
@@ -64,14 +62,7 @@ function toEntry(filePath: string, raw: string): ContentEntry {
     throw new ContentError(`${filePath}: нужно поле summary`)
   }
 
-  if (data.difficulty !== undefined && !isDifficulty(data.difficulty)) {
-    throw new ContentError(
-      `${filePath}: difficulty должен быть beginner | intermediate | advanced`,
-    )
-  }
-
   const slug = asString(data.slug) ?? fileSlug
-  const category = asString(data.category)
 
   return {
     id: makeEntryId(collection, slug),
@@ -79,9 +70,12 @@ function toEntry(filePath: string, raw: string): ContentEntry {
     collection,
     title,
     summary,
-    tags: asStringArray(data.tags),
-    category,
-    difficulty: isDifficulty(data.difficulty) ? data.difficulty : undefined,
+    module: asString(data.module),
+    areas: asStringArray(data.areas),
+    tasks: asStringArray(data.tasks),
+    genres: asStringArray(data.genres),
+    stages: asStringArray(data.stages),
+    parent: asString(data.parent),
     related: asStringArray(data.related),
     order: asNumber(data.order) ?? 100,
     draft: asBoolean(data.draft) ?? false,
@@ -95,12 +89,11 @@ function loadCatalog(): ContentEntry[] {
   const slugs = new Map<string, string>()
 
   for (const entry of entries) {
-    const key = entry.id
-    const previous = slugs.get(key)
+    const previous = slugs.get(entry.id)
     if (previous) {
-      throw new ContentError(`Дублируется id ${key}: ${previous} и ${entry.sourcePath}`)
+      throw new ContentError(`Дублируется id ${entry.id}: ${previous} и ${entry.sourcePath}`)
     }
-    slugs.set(key, entry.sourcePath)
+    slugs.set(entry.id, entry.sourcePath)
   }
 
   return entries.sort((a, b) => {

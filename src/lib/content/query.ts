@@ -1,9 +1,13 @@
+import { embeddedExerciseSlugs } from './parse'
 import { allEntries } from './load'
 import {
   COLLECTIONS,
+  TAG_AXES,
+  matchesAxis,
   type CollectionId,
   type CollectionMeta,
   type ContentEntry,
+  type TagAxisId,
 } from './schema'
 
 export function getCollections(): CollectionMeta[] {
@@ -31,20 +35,71 @@ export function getEntryById(id: string): ContentEntry | undefined {
 }
 
 export function getRelated(entry: ContentEntry): ContentEntry[] {
-  return entry.related
+  const fromField = entry.related
     .map((id) => getEntryById(id) ?? allEntries.find((item) => item.slug === id))
     .filter((item): item is ContentEntry => Boolean(item && item.id !== entry.id))
+
+  if (fromField.length > 0) return fromField
+
+  if (entry.collection === 'exercises' && entry.parent) {
+    return getExercisesForNoteId(entry.parent).filter((item) => item.id !== entry.id).slice(0, 6)
+  }
+
+  if (!entry.module) return []
+  return getEntries('notes')
+    .filter((item) => item.id !== entry.id && item.module === entry.module)
+    .slice(0, 4)
 }
 
-export function getTags(collection?: CollectionId): string[] {
-  const source = collection ? getEntries(collection) : allEntries
-  return [...new Set(source.flatMap((entry) => entry.tags))].sort((a, b) =>
-    a.localeCompare(b, 'ru'),
+export function getExercisesForNote(note: ContentEntry): ContentEntry[] {
+  return getExercisesForNoteId(note.id)
+}
+
+export function getExercisesForNoteId(noteId: string): ContentEntry[] {
+  return getEntries('exercises')
+    .filter((entry) => entry.parent === noteId)
+    .sort((a, b) => a.order - b.order)
+}
+
+export function getParentNote(entry: ContentEntry): ContentEntry | undefined {
+  return entry.parent ? getEntryById(entry.parent) : undefined
+}
+
+export function getOrphanExercises(note: ContentEntry): ContentEntry[] {
+  const embedded = new Set(embeddedExerciseSlugs(note.body))
+  return getExercisesForNote(note).filter((item) => !embedded.has(item.slug))
+}
+
+export function getAxisOptions(collection: CollectionId, axis: TagAxisId): string[] {
+  const values = getEntries(collection).flatMap((entry) => {
+    if (axis === 'module') return entry.module ? [entry.module] : []
+    return entry[axis]
+  })
+  return [...new Set(values)].sort((a, b) => a.localeCompare(b, 'ru'))
+}
+
+export function filterEntries(
+  collection: CollectionId,
+  filters: Partial<Record<TagAxisId, string | null>>,
+): ContentEntry[] {
+  return getEntries(collection).filter((entry) =>
+    TAG_AXES.every((axis) => matchesAxis(entry, axis.id, filters[axis.id] ?? null)),
   )
 }
 
-export function getFeatured(limit = 3): ContentEntry[] {
-  return getEntries('techniques').slice(0, limit)
+export function getModules(): { name: string; count: number }[] {
+  const counts = new Map<string, number>()
+  for (const entry of getEntries('notes')) {
+    if (!entry.module) continue
+    counts.set(entry.module, (counts.get(entry.module) ?? 0) + 1)
+  }
+  return [...counts.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'ru'))
+}
+
+export function getFeatured(limit = 5): ContentEntry[] {
+  return getEntries('notes').slice(0, limit)
 }
 
 export function searchEntries(query: string): ContentEntry[] {
@@ -55,8 +110,11 @@ export function searchEntries(query: string): ContentEntry[] {
     const haystack = [
       entry.title,
       entry.summary,
-      entry.category ?? '',
-      entry.tags.join(' '),
+      entry.module ?? '',
+      entry.areas.join(' '),
+      entry.tasks.join(' '),
+      entry.genres.join(' '),
+      entry.stages.join(' '),
       entry.body,
     ]
       .join('\n')
@@ -68,9 +126,15 @@ export function searchEntries(query: string): ContentEntry[] {
 
 export function countByCollection(): Record<CollectionId, number> {
   return {
-    techniques: getEntries('techniques').length,
+    notes: getEntries('notes').length,
     exercises: getEntries('exercises').length,
-    glossary: getEntries('glossary').length,
-    articles: getEntries('articles').length,
   }
+}
+
+export function axisFiltersFromSearch(
+  params: URLSearchParams,
+): Partial<Record<TagAxisId, string | null>> {
+  return Object.fromEntries(TAG_AXES.map((axis) => [axis.id, params.get(axis.param)])) as Partial<
+    Record<TagAxisId, string | null>
+  >
 }

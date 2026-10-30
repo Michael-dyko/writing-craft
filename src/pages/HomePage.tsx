@@ -1,10 +1,6 @@
 import { Link } from 'react-router-dom'
 import { EntryList } from '@/components/content/EntryList'
-import {
-  countByCollection,
-  getCollections,
-  getFeatured,
-} from '@/lib/content'
+import { countByCollection, getCollections, getFeatured, getModules } from '@/lib/content'
 import { ruCount } from '@/lib/pluralize'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import styles from './HomePage.module.css'
@@ -12,7 +8,8 @@ import styles from './HomePage.module.css'
 export function HomePage() {
   useDocumentTitle()
   const counts = countByCollection()
-  const featured = getFeatured(3)
+  const featured = getFeatured(5)
+  const modules = getModules()
 
   return (
     <div className="page">
@@ -20,9 +17,8 @@ export function HomePage() {
         <p className={styles.eyebrow}>Рабочая тетрадь автора</p>
         <h1 className={styles.title}>Писать — ремесло.</h1>
         <p className={styles.lead}>
-          Приёмы, упражнения и словарь, к которым можно возвращаться посреди черновика.
-          База знаний живёт рядом с кодом: пока без сервера и без CMS, но уже с понятным
-          контрактом на заметку.
+          Темы по модулям, с осями жанра, задачи и этапа работы. Упражнения живут
+          отдельно, но остаются внутри теории.
         </p>
       </section>
 
@@ -40,12 +36,29 @@ export function HomePage() {
         ))}
       </ul>
 
+      <section className={styles.moduleSection}>
+        <h2 className={styles.sectionTitle}>Модули</h2>
+        <p className={styles.sectionLead}>Главная полка базы — от языка до миростроения.</p>
+        <ul className={styles.modules}>
+          {modules.map((module) => (
+            <li key={module.name}>
+              <Link
+                className={styles.module}
+                to={`/notes?module=${encodeURIComponent(module.name)}`}
+              >
+                <span>{module.name}</span>
+                <span className={styles.moduleCount}>
+                  {ruCount(module.count, ['тема', 'темы', 'тем'])}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section>
         <h2 className={styles.sectionTitle}>С чего начать</h2>
-        <p className={styles.sectionLead}>
-          Три опорных приёма. Когда появится ваша папка с материалами, этот список
-          заполнится уже настоящей базой.
-        </p>
+        <p className={styles.sectionLead}>Первые темы по рабочему порядку из исходной базы.</p>
         <EntryList entries={featured} />
       </section>
     </div>

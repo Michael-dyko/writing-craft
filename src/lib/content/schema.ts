@@ -1,15 +1,6 @@
-export const COLLECTION_IDS = [
-  'techniques',
-  'exercises',
-  'glossary',
-  'articles',
-] as const
+export const COLLECTION_IDS = ['notes', 'exercises'] as const
 
 export type CollectionId = (typeof COLLECTION_IDS)[number]
-
-export const DIFFICULTIES = ['beginner', 'intermediate', 'advanced'] as const
-
-export type Difficulty = (typeof DIFFICULTIES)[number]
 
 export type CollectionMeta = {
   id: CollectionId
@@ -20,47 +11,43 @@ export type CollectionMeta = {
 }
 
 export const COLLECTIONS: Record<CollectionId, CollectionMeta> = {
-  techniques: {
-    id: 'techniques',
-    title: 'Приёмы',
-    singular: 'Приём',
-    description: 'Инструменты, которые можно применить в сцене, абзаце или диалоге.',
-    path: '/techniques',
+  notes: {
+    id: 'notes',
+    title: 'Темы',
+    singular: 'Тема',
+    description: 'Теория и приёмы. Внутри темы упражнения вставлены ссылками — их же можно открыть отдельно.',
+    path: '/notes',
   },
   exercises: {
     id: 'exercises',
     title: 'Упражнения',
     singular: 'Упражнение',
-    description: 'Короткие задания, чтобы приём стал навыком, а не теорией.',
+    description: 'Задания из тем, собранные в отдельный список. Каждое упражнение знает свою тему.',
     path: '/exercises',
-  },
-  glossary: {
-    id: 'glossary',
-    title: 'Словарь',
-    singular: 'Термин',
-    description: 'Рабочие определения, без которых сложно говорить о тексте.',
-    path: '/glossary',
-  },
-  articles: {
-    id: 'articles',
-    title: 'Статьи',
-    singular: 'Статья',
-    description: 'Связные разборы и заметки длиннее одного приёма.',
-    path: '/articles',
   },
 }
 
-/**
- * Frontmatter-контракт заметки.
- * CMS позже должен писать тот же набор полей в markdown.
- */
+export const TAG_AXES = [
+  { id: 'module', param: 'module', label: 'Модуль' },
+  { id: 'tasks', param: 'task', label: 'Задача' },
+  { id: 'genres', param: 'genre', label: 'Жанр' },
+  { id: 'stages', param: 'stage', label: 'Этап' },
+  { id: 'areas', param: 'area', label: 'Область' },
+] as const
+
+export type TagAxisId = (typeof TAG_AXES)[number]['id']
+export type TagAxisParam = (typeof TAG_AXES)[number]['param']
+
 export type ContentFrontmatter = {
   title: string
   slug?: string
   summary: string
-  tags?: string[]
-  category?: string
-  difficulty?: Difficulty
+  module?: string
+  areas?: string[]
+  tasks?: string[]
+  genres?: string[]
+  stages?: string[]
+  parent?: string
   related?: string[]
   order?: number
   draft?: boolean
@@ -72,9 +59,12 @@ export type ContentEntry = {
   collection: CollectionId
   title: string
   summary: string
-  tags: string[]
-  category?: string
-  difficulty?: Difficulty
+  module?: string
+  areas: string[]
+  tasks: string[]
+  genres: string[]
+  stages: string[]
+  parent?: string
   related: string[]
   order: number
   draft: boolean
@@ -86,14 +76,24 @@ export function isCollectionId(value: string): value is CollectionId {
   return (COLLECTION_IDS as readonly string[]).includes(value)
 }
 
-export function isDifficulty(value: unknown): value is Difficulty {
-  return typeof value === 'string' && (DIFFICULTIES as readonly string[]).includes(value)
-}
-
 export function entryPath(entry: Pick<ContentEntry, 'collection' | 'slug'>): string {
   return `${COLLECTIONS[entry.collection].path}/${entry.slug}`
 }
 
 export function makeEntryId(collection: CollectionId, slug: string): string {
   return `${collection}/${slug}`
+}
+
+export function axisValues(entry: ContentEntry, axis: TagAxisId): string[] {
+  if (axis === 'module') return entry.module ? [entry.module] : []
+  return entry[axis]
+}
+
+export function matchesAxis(
+  entry: ContentEntry,
+  axis: TagAxisId,
+  value: string | null,
+): boolean {
+  if (!value) return true
+  return axisValues(entry, axis).includes(value)
 }

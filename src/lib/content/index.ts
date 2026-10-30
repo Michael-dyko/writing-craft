@@ -1,29 +1,40 @@
 export {
   COLLECTIONS,
   COLLECTION_IDS,
-  DIFFICULTIES,
+  TAG_AXES,
+  axisValues,
   entryPath,
   isCollectionId,
   makeEntryId,
+  matchesAxis,
   type CollectionId,
   type CollectionMeta,
   type ContentEntry,
   type ContentFrontmatter,
-  type Difficulty,
+  type TagAxisId,
+  type TagAxisParam,
 } from './schema'
 
 export {
+  axisFiltersFromSearch,
   countByCollection,
+  filterEntries,
   getAllEntries,
+  getAxisOptions,
   getCollection,
   getCollections,
   getEntries,
   getEntry,
   getEntryById,
+  getExercisesForNote,
   getFeatured,
+  getModules,
+  getOrphanExercises,
+  getParentNote,
   getRelated,
-  getTags,
   searchEntries,
 } from './query'
 
-export { difficultyLabels, collectionNav } from './labels'
+export { collectionNav } from './labels'
+
+export { splitExerciseEmbeds } from './parse'

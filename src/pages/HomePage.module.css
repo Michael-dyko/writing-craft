@@ -13,11 +13,12 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 6vw, var(--step-5));
+  font-size: clamp(2.2rem, 11vw, var(--step-5));
   font-weight: 650;
   letter-spacing: -0.045em;
   line-height: 0.95;
   max-width: 14ch;
+  overflow-wrap: anywhere;
 }
 
 .lead {
@@ -29,7 +30,7 @@
 
 .collections {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
   gap: 1rem;
   list-style: none;
   margin: 0.4rem 0 3rem;
@@ -82,4 +83,37 @@
   color: var(--ink-soft);
   margin-bottom: 1.2rem;
   max-width: 36rem;
+}
+
+.moduleSection {
+  margin-bottom: 3rem;
+}
+
+.modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: 0.55rem;
+  list-style: none;
+}
+
+.module {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  text-decoration: none;
+  background: var(--paper-raised);
+}
+
+.module:hover {
+  border-color: var(--ink);
+}
+
+.moduleCount {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
 }
