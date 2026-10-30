@@ -15,6 +15,11 @@
   .wrap > .stack {
     display: grid;
   }
+
+  .wrap:not([open])::details-content {
+    content-visibility: visible;
+    block-size: auto;
+  }
 }
 
 .row {
