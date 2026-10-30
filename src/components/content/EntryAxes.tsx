@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { COLLECTIONS, TAG_AXES, axisValues, type ContentEntry } from '@/lib/content'
+import { COLLECTIONS, TAG_AXES, axisValues, slugify, type ContentEntry } from '@/lib/content'
 import styles from './EntryMeta.module.css'
 
 export function EntryAxes({ entry }: { entry: ContentEntry }) {
@@ -13,7 +13,7 @@ export function EntryAxes({ entry }: { entry: ContentEntry }) {
             key={`${axis.id}-${value}`}
             className={styles.item}
             data-axis={axis.id}
-            to={`${base}?${axis.param}=${encodeURIComponent(value)}`}
+            to={`${base}?${axis.param}=${slugify(value)}`}
           >
             {value}
           </Link>

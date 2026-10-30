@@ -1,4 +1,12 @@
-import { isCollectionId, makeEntryId, type CollectionId, type ContentEntry } from './schema'
+import {
+  TAG_AXES,
+  axisValues,
+  isCollectionId,
+  makeEntryId,
+  type CollectionId,
+  type ContentEntry,
+} from './schema'
+import { slugify, uniqueSlug } from './slug'
 import {
   asBoolean,
   asNumber,
@@ -67,6 +75,7 @@ function toEntry(filePath: string, raw: string): ContentEntry {
   return {
     id: makeEntryId(collection, slug),
     slug,
+    urlSlug: slugify(slug) || 'entry',
     collection,
     title,
     summary,
@@ -94,6 +103,29 @@ function loadCatalog(): ContentEntry[] {
       throw new ContentError(`Дублируется id ${entry.id}: ${previous} и ${entry.sourcePath}`)
     }
     slugs.set(entry.id, entry.sourcePath)
+  }
+
+  const urlSlugs = new Map<CollectionId, Set<string>>()
+  for (const entry of entries) {
+    const taken = urlSlugs.get(entry.collection) ?? new Set<string>()
+    entry.urlSlug = uniqueSlug(entry.slug, taken)
+    urlSlugs.set(entry.collection, taken)
+  }
+
+  for (const axis of TAG_AXES) {
+    const bySlug = new Map<string, string>()
+    for (const entry of entries) {
+      for (const value of axisValues(entry, axis.id)) {
+        const tagSlug = slugify(value)
+        const previous = bySlug.get(tagSlug)
+        if (previous && previous !== value) {
+          throw new ContentError(
+            `Слаг «${tagSlug}» совпадает у тегов «${previous}» и «${value}» (${axis.label})`,
+          )
+        }
+        bySlug.set(tagSlug, value)
+      }
+    }
   }
 
   return entries.sort((a, b) => {

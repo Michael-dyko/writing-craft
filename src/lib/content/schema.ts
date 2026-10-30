@@ -1,3 +1,5 @@
+import { slugify } from './slug'
+
 export const COLLECTION_IDS = ['notes', 'exercises'] as const
 
 export type CollectionId = (typeof COLLECTION_IDS)[number]
@@ -56,6 +58,7 @@ export type ContentFrontmatter = {
 export type ContentEntry = {
   id: string
   slug: string
+  urlSlug: string
   collection: CollectionId
   title: string
   summary: string
@@ -76,8 +79,8 @@ export function isCollectionId(value: string): value is CollectionId {
   return (COLLECTION_IDS as readonly string[]).includes(value)
 }
 
-export function entryPath(entry: Pick<ContentEntry, 'collection' | 'slug'>): string {
-  return `${COLLECTIONS[entry.collection].path}/${entry.slug}`
+export function entryPath(entry: Pick<ContentEntry, 'collection' | 'urlSlug'>): string {
+  return `${COLLECTIONS[entry.collection].path}/${entry.urlSlug}`
 }
 
 export function makeEntryId(collection: CollectionId, slug: string): string {
@@ -95,5 +98,5 @@ export function matchesAxis(
   value: string | null,
 ): boolean {
   if (!value) return true
-  return axisValues(entry, axis).includes(value)
+  return axisValues(entry, axis).some((item) => item === value || slugify(item) === value)
 }

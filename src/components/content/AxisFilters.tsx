@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { TAG_AXES, getAxisOptions, type CollectionId, type TagAxisParam } from '@/lib/content'
+import {
+  TAG_AXES,
+  axisFilterSearch,
+  getAxisOptions,
+  slugify,
+  type CollectionId,
+  type TagAxisParam,
+} from '@/lib/content'
 import styles from './AxisFilters.module.css'
 
 type Props = {
@@ -15,10 +22,7 @@ export function AxisFilters({ collection }: Props) {
   const [expanded, setExpanded] = useState(active.length > 0)
 
   function applyFilter(param: TagAxisParam, value: string) {
-    const next = new URLSearchParams(params)
-    if (value) next.set(param, value)
-    else next.delete(param)
-    const query = next.toString()
+    const query = axisFilterSearch(params, param, value || null)
     navigate({ pathname: base, search: query }, { replace: true, preventScrollReset: true })
   }
 
@@ -46,13 +50,13 @@ export function AxisFilters({ collection }: Props) {
               <div className={styles.selectWrap}>
                 <select
                   className={styles.select}
-                  value={selected}
+                  value={selectValue(selected, options)}
                   aria-labelledby={`filter-${axis.id}`}
                   onChange={(event) => applyFilter(axis.param, event.target.value)}
                 >
                   <option value="">Все</option>
                   {options.map((option) => (
-                    <option key={option} value={option}>
+                    <option key={option} value={slugify(option)}>
                       {option}
                     </option>
                   ))}
@@ -64,14 +68,17 @@ export function AxisFilters({ collection }: Props) {
                   active={!selected}
                   label="Все"
                 />
-                {options.map((option) => (
-                  <FilterChip
-                    key={option}
-                    to={hrefWith(base, params, axis.param, option)}
-                    active={selected === option}
-                    label={option}
-                  />
-                ))}
+                {options.map((option) => {
+                  const optionSlug = slugify(option)
+                  return (
+                    <FilterChip
+                      key={option}
+                      to={hrefWith(base, params, axis.param, option)}
+                      active={selected === optionSlug || selected === option}
+                      label={option}
+                    />
+                  )
+                })}
               </div>
             </div>
           )
@@ -89,16 +96,19 @@ function FilterChip({ to, active, label }: { to: string; active: boolean; label:
   )
 }
 
-function hrefWith(base: string, params: URLSearchParams, key: string, value: string): string {
-  const next = new URLSearchParams(params)
-  next.set(key, value)
-  const query = next.toString()
+function selectValue(selected: string, options: string[]): string {
+  if (!selected) return ''
+  if (options.some((option) => slugify(option) === selected)) return selected
+  const match = options.find((option) => option === selected)
+  return match ? slugify(match) : selected
+}
+
+function hrefWith(base: string, params: URLSearchParams, key: TagAxisParam, value: string): string {
+  const query = axisFilterSearch(params, key, value)
   return query ? `${base}?${query}` : base
 }
 
-function hrefWithout(base: string, params: URLSearchParams, key: string): string {
-  const next = new URLSearchParams(params)
-  next.delete(key)
-  const query = next.toString()
+function hrefWithout(base: string, params: URLSearchParams, key: TagAxisParam): string {
+  const query = axisFilterSearch(params, key, null)
   return query ? `${base}?${query}` : base
 }

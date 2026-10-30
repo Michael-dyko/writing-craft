@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { EntryAxes } from '@/components/content/EntryAxes'
 import { MarkdownBody } from '@/components/content/MarkdownBody'
 import { NoteBody } from '@/components/content/NoteBody'
@@ -26,6 +26,10 @@ export function EntryPage() {
 
   if (!valid || !entry) {
     return <NotFoundPage />
+  }
+
+  if (slug !== entry.urlSlug) {
+    return <Navigate to={entryPath(entry)} replace />
   }
 
   const collection = getCollection(collectionId)

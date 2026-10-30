@@ -16,7 +16,9 @@ export {
 } from './schema'
 
 export {
+  axisFilterSearch,
   axisFiltersFromSearch,
+  canonicalizeAxisSearch,
   countByCollection,
   filterEntries,
   getAllEntries,
@@ -34,6 +36,8 @@ export {
   getRelated,
   searchEntries,
 } from './query'
+
+export { slugify } from './slug'
 
 export { collectionNav } from './labels'
 

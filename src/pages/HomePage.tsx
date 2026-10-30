@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { EntryList } from '@/components/content/EntryList'
-import { countByCollection, getCollections, getFeatured, getModules } from '@/lib/content'
+import { countByCollection, getCollections, getFeatured, getModules, slugify } from '@/lib/content'
 import { ruCount } from '@/lib/pluralize'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import styles from './HomePage.module.css'
@@ -44,7 +44,7 @@ export function HomePage() {
             <li key={module.name}>
               <Link
                 className={styles.module}
-                to={`/notes?module=${encodeURIComponent(module.name)}`}
+                to={`/notes?module=${slugify(module.name)}`}
               >
                 <span className={styles.moduleName}>{module.name}</span>
                 <span className={styles.moduleCount}>

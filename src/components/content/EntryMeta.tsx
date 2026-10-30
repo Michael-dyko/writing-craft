@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { COLLECTIONS, type ContentEntry } from '@/lib/content'
+import { COLLECTIONS, slugify, type ContentEntry } from '@/lib/content'
 import styles from './EntryMeta.module.css'
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 
 export function EntryMeta({ entry }: Props) {
   const moduleHref = entry.module
-    ? `${COLLECTIONS.notes.path}?module=${encodeURIComponent(entry.module)}`
+    ? `${COLLECTIONS.notes.path}?module=${slugify(entry.module)}`
     : undefined
 
   return (

@@ -8,7 +8,9 @@ import {
   type CollectionMeta,
   type ContentEntry,
   type TagAxisId,
+  type TagAxisParam,
 } from './schema'
+import { slugify } from './slug'
 
 export function getCollections(): CollectionMeta[] {
   return Object.values(COLLECTIONS)
@@ -27,7 +29,10 @@ export function getEntries(collection: CollectionId): ContentEntry[] {
 }
 
 export function getEntry(collection: CollectionId, slug: string): ContentEntry | undefined {
-  return allEntries.find((entry) => entry.collection === collection && entry.slug === slug)
+  return allEntries.find(
+    (entry) =>
+      entry.collection === collection && (entry.urlSlug === slug || entry.slug === slug),
+  )
 }
 
 export function getEntryById(id: string): ContentEntry | undefined {
@@ -137,4 +142,26 @@ export function axisFiltersFromSearch(
   return Object.fromEntries(TAG_AXES.map((axis) => [axis.id, params.get(axis.param)])) as Partial<
     Record<TagAxisId, string | null>
   >
+}
+
+export function canonicalizeAxisSearch(params: URLSearchParams): string {
+  const next = new URLSearchParams(params)
+  for (const axis of TAG_AXES) {
+    const raw = params.get(axis.param)
+    if (!raw) continue
+    const slug = slugify(raw)
+    if (slug && slug !== raw) next.set(axis.param, slug)
+  }
+  return next.toString()
+}
+
+export function axisFilterSearch(
+  params: URLSearchParams,
+  param: TagAxisParam,
+  value: string | null,
+): string {
+  const next = new URLSearchParams(params)
+  if (value) next.set(param, slugify(value) || value)
+  else next.delete(param)
+  return next.toString()
 }
