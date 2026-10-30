@@ -1,0 +1,65 @@
+.body {
+  font-size: 1.12rem;
+}
+
+.body > *:first-child {
+  margin-top: 0;
+}
+
+.body h2,
+.body h3 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 2rem 0 0.7rem;
+}
+
+.body h2 {
+  font-size: var(--step-2);
+}
+
+.body h3 {
+  font-size: var(--step-1);
+}
+
+.body p,
+.body ul,
+.body ol,
+.body blockquote {
+  margin: 0 0 1rem;
+}
+
+.body ul,
+.body ol {
+  padding-left: 1.2rem;
+}
+
+.body li + li {
+  margin-top: 0.35rem;
+}
+
+.body a {
+  color: var(--accent);
+}
+
+.body blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 0.15rem 0 0.15rem 1rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--tag);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.body hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2rem 0;
+}

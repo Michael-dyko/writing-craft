@@ -1,0 +1,85 @@
+.hero {
+  padding-bottom: 2.4rem;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6vw, var(--step-5));
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  max-width: 14ch;
+}
+
+.lead {
+  max-width: 38rem;
+  margin-top: 1.3rem;
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+}
+
+.collections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 0.4rem 0 3rem;
+}
+
+.card {
+  display: grid;
+  gap: 0.55rem;
+  min-height: 10rem;
+  padding: 1.2rem 1.25rem 1.3rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+}
+
+.card:hover .cardTitle {
+  color: var(--accent);
+}
+
+.count {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.cardText {
+  color: var(--ink-soft);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.sectionLead {
+  color: var(--ink-soft);
+  margin-bottom: 1.2rem;
+  max-width: 36rem;
+}

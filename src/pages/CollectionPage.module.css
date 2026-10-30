@@ -1,0 +1,49 @@
+.header {
+  margin-bottom: 1.6rem;
+  max-width: 40rem;
+}
+
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.45rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 5vw, var(--step-4));
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.description {
+  margin-top: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.4rem;
+}
+
+.filter {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.filter:hover,
+.active {
+  color: var(--ink);
+  border-color: var(--ink);
+}

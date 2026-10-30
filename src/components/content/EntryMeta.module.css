@@ -1,0 +1,27 @@
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  font-family: var(--font-sans);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.62rem;
+  border-radius: 999px;
+  background: var(--tag);
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.item:hover {
+  color: var(--ink);
+}
+
+.accent {
+  background: color-mix(in srgb, var(--accent) 14%, var(--tag));
+  color: var(--accent);
+}

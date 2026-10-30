@@ -1,0 +1,32 @@
+.page {
+  width: min(calc(100% - 2rem), var(--content));
+  margin: 0 auto;
+}
+
+.back {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  margin-bottom: 1.2rem;
+}
+
+.back:hover {
+  color: var(--accent);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 5vw, 3.1rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin: 0.85rem 0 0.9rem;
+}
+
+.summary {
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  margin-bottom: 1.6rem;
+}
