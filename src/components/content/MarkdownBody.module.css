@@ -1,5 +1,12 @@
 .body {
   font-size: 1.12rem;
+  overflow-wrap: anywhere;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .body > *:first-child {
@@ -13,6 +20,7 @@
   letter-spacing: -0.03em;
   line-height: 1.2;
   margin: 2rem 0 0.7rem;
+  scroll-margin-top: calc(var(--header) + 4.75rem);
 }
 
 .body h2 {
@@ -62,4 +70,33 @@
   border: 0;
   border-top: 1px solid var(--rule);
   margin: 2rem 0;
+}
+
+.body table {
+  width: max-content;
+  min-width: 100%;
+  max-width: none;
+  border-collapse: collapse;
+  font-size: 0.92em;
+}
+
+.body th,
+.body td {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.body pre {
+  overflow-x: auto;
+  padding: 0.8rem 1rem;
+  background: var(--tag);
+  border-radius: 8px;
+}
+
+@media (max-width: 820px) {
+  .body {
+    font-size: 1.02rem;
+  }
 }

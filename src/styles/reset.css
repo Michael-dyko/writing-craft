@@ -12,6 +12,8 @@ body,
 
 html {
   background: var(--paper);
+  overflow-x: clip;
+  scroll-padding-top: calc(var(--header) + 4.75rem);
 }
 
 body {
@@ -20,6 +22,7 @@ body {
   font-family: var(--font-serif);
   font-size: var(--step-0);
   line-height: var(--leading);
+  overflow-x: clip;
   background:
     radial-gradient(1200px 480px at 10% -10%, color-mix(in srgb, var(--accent-soft) 22%, transparent), transparent 55%),
     var(--paper);

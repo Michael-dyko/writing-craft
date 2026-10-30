@@ -46,7 +46,7 @@ export function HomePage() {
                 className={styles.module}
                 to={`/notes?module=${encodeURIComponent(module.name)}`}
               >
-                <span>{module.name}</span>
+                <span className={styles.moduleName}>{module.name}</span>
                 <span className={styles.moduleCount}>
                   {ruCount(module.count, ['тема', 'темы', 'тем'])}
                 </span>

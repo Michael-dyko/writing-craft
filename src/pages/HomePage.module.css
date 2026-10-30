@@ -105,6 +105,12 @@
   border-radius: 12px;
   text-decoration: none;
   background: var(--paper-raised);
+  min-width: 0;
+}
+
+.moduleName {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .module:hover {
