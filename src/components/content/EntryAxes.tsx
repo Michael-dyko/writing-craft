@@ -11,7 +11,8 @@ export function EntryAxes({ entry }: { entry: ContentEntry }) {
         axisValues(entry, axis.id).map((value) => (
           <Link
             key={`${axis.id}-${value}`}
-            className={`${styles.item} ${axis.id === 'module' ? styles.accent : ''}`}
+            className={styles.item}
+            data-axis={axis.id}
             to={`${base}?${axis.param}=${encodeURIComponent(value)}`}
           >
             {value}

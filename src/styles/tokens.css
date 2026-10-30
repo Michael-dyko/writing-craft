@@ -10,6 +10,11 @@
   --accent-hover: #7e2e24;
   --accent-soft: #c4a484;
   --tag: #ece4d6;
+  --axis-module: #9c3b2e;
+  --axis-tasks: #4e6840;
+  --axis-genres: #3a5870;
+  --axis-stages: #8a5722;
+  --axis-areas: #6b4563;
   --shadow: 0 18px 40px rgba(27, 23, 20, 0.08);
 
   --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', serif;
@@ -43,6 +48,11 @@
     --accent-hover: #e28b7f;
     --accent-soft: #8a7358;
     --tag: #2a251f;
+    --axis-module: #d47264;
+    --axis-tasks: #a3c07a;
+    --axis-genres: #8bb4cc;
+    --axis-stages: #e0b36a;
+    --axis-areas: #d4a0c4;
     --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
   }
 }

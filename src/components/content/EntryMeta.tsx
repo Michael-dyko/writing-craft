@@ -18,11 +18,13 @@ export function EntryMeta({ entry }: Props) {
       ) : null}
       {entry.module ? (
         moduleHref ? (
-          <Link className={`${styles.item} ${styles.accent}`} to={moduleHref}>
+          <Link className={styles.item} data-axis="module" to={moduleHref}>
             {entry.module}
           </Link>
         ) : (
-          <span className={`${styles.item} ${styles.accent}`}>{entry.module}</span>
+          <span className={styles.item} data-axis="module">
+            {entry.module}
+          </span>
         )
       ) : null}
     </div>

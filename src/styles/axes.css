@@ -1,0 +1,19 @@
+[data-axis='module'] {
+  --axis: var(--axis-module);
+}
+
+[data-axis='tasks'] {
+  --axis: var(--axis-tasks);
+}
+
+[data-axis='genres'] {
+  --axis: var(--axis-genres);
+}
+
+[data-axis='stages'] {
+  --axis: var(--axis-stages);
+}
+
+[data-axis='areas'] {
+  --axis: var(--axis-areas);
+}
