@@ -10,6 +10,7 @@ type Props = {
 
 export function EntryList({ entries, empty = 'Пока здесь пусто.' }: Props) {
   if (entries.length === 0) {
+    if (!empty) return null
     return <p className={styles.empty}>{empty}</p>
   }
 

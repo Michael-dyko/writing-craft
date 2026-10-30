@@ -25,3 +25,9 @@
   margin-top: 0.8rem;
   color: var(--ink-soft);
 }
+
+.result {
+  margin: -0.4rem 0 1.2rem;
+  font-family: var(--font-sans);
+  color: var(--ink-soft);
+}

@@ -9,6 +9,7 @@ import {
   getCollection,
   isCollectionId,
 } from '@/lib/content'
+import { foundCount } from '@/lib/pluralize'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { NotFoundPage } from './NotFoundPage'
 import styles from './CollectionPage.module.css'
@@ -47,13 +48,13 @@ export function CollectionPage() {
 
       <AxisFilters collection={collection.id} />
 
+      {hasFilter ? (
+        <p className={styles.result}>{foundCount(entries.length, collection.id)}</p>
+      ) : null}
+
       <EntryList
         entries={entries}
-        empty={
-          hasFilter
-            ? 'Нет записей по выбранным фильтрам.'
-            : 'В этом разделе пока нет записей.'
-        }
+        empty={hasFilter ? '' : 'В этом разделе пока нет записей.'}
       />
     </div>
   )

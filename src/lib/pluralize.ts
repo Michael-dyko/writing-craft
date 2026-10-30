@@ -1,3 +1,13 @@
+export function foundCount(n: number, kind: 'notes' | 'exercises'): string {
+  if (n === 0) return 'Ничего не нашлось.'
+  if (kind === 'notes') {
+    const counted = ruCount(n, ['тема', 'темы', 'тем'])
+    const singular = n % 10 === 1 && n % 100 !== 11
+    return singular ? `Нашлась ${counted}.` : `Нашлось ${counted}.`
+  }
+  return `Нашлось ${ruCount(n, ['упражнение', 'упражнения', 'упражнений'])}.`
+}
+
 export function ruCount(n: number, forms: [string, string, string]): string {
   const abs = Math.abs(n) % 100
   const last = abs % 10
