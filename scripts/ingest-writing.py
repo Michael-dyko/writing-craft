@@ -54,15 +54,39 @@ def is_exercise_heading(text: str) -> bool:
     return "упражнение" in text.lower()
 
 
-def exercise_title(text: str) -> str:
+def cap_first(value: str) -> str:
+    value = value.strip()
+    if not value:
+        return value
+    if ": " in value:
+        left, right = value.split(": ", 1)
+        return f"{cap_first(left)}: {cap_first(right)}"
+    return value[0].upper() + value[1:]
+
+
+GENERIC_TITLES = {
+    "упражнение",
+    "практическое упражнение",
+    "дополнительное упражнение",
+    "полезное упражнение",
+}
+
+
+def exercise_title(text: str, body: str = "") -> str:
     title = re.sub(r"^\d+\.\s+", "", text).strip()
     title = re.sub(
-        r"^Упражнение(?:\s*№\s*\d+)?(?:\s+\d+)?(?:[.:]\s*|\s+)?",
+        r"^(?:Практическое |Дополнительное |Полезное )?Упражнение(?:\s*№\s*\d+)?(?:\s+\d+)?(?:[.:]\s*|\s+)?",
         "",
         title,
         flags=re.I,
-    ).strip()
-    return title or text
+    ).strip(" .:").strip()
+    if not title or title.lower() in GENERIC_TITLES:
+        derived = first_instruction(body)
+        title = derived.rstrip(".") if derived else title or "Упражнение"
+        if len(title) > 70:
+            clipped = title[:67]
+            title = clipped.rsplit(" ", 1)[0] if " " in clipped else clipped
+    return cap_first(title)
 
 
 def split_values(value: str) -> list[str]:
@@ -101,29 +125,67 @@ def parse_notion(raw: str) -> tuple[str, dict[str, object], str]:
     return title, meta, body
 
 
-def first_paragraph(body: str) -> str:
-    chunks: list[str] = []
+def first_instruction(body: str) -> str:
     for block in re.split(r"\n\s*\n", body):
         text = block.strip()
         if not text or text.startswith("#") or text.startswith(">") or text.startswith("---"):
             continue
         if text.startswith("- ") or text.startswith("|") or text.startswith(":::"):
             continue
-        text = re.sub(r"[*_`]", "", text)
-        text = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", text)
-        text = re.sub(r"\s+", " ", text).strip()
-        if len(text) < 40:
+        first_line = text.split("\n", 1)[0].strip()
+        first_line = re.sub(r"[*_`]", "", first_line)
+        first_line = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", first_line)
+        first_line = re.sub(r"\s+", " ", first_line).strip()
+        if first_line.lower().startswith("например"):
             continue
-        chunks.append(text)
-        if len(" ".join(chunks)) >= 180:
+        if len(first_line) < 8:
+            continue
+        if first_line.endswith(":"):
+            first_line = first_line[:-1].rstrip() + "."
+        return first_line
+    return ""
+
+
+def first_paragraph(body: str) -> str:
+    found: list[str] = []
+    for block in re.split(r"\n\s*\n", body):
+        text = block.strip()
+        if not text or text.startswith("#") or text.startswith(">") or text.startswith("---"):
+            continue
+        if text.startswith("- ") or text.startswith("|") or text.startswith(":::"):
+            continue
+        if re.match(r"^\d+\.\s", text):
+            continue
+        first_line = text.split("\n", 1)[0].strip()
+        cleaned = re.sub(r"[*_`]", "", first_line)
+        cleaned = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", cleaned)
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+        if cleaned.lower().startswith("например") or len(cleaned) < 8:
+            continue
+        if cleaned.endswith(";"):
+            continue
+        if first_line.endswith(":"):
+            if found:
+                continue
+            cleaned = cleaned.rstrip(":.") + "."
+        found.append(cleaned)
+        if len(found[0]) >= 70 and len(found) == 1:
             break
-    summary = " ".join(chunks)
+        if len(found) == 2:
+            break
+
+    if not found:
+        return "Рабочая заметка по писательскому мастерству."
+
+    summary = found[0]
+    if len(summary) < 70 and len(found) > 1:
+        summary = summary.rstrip(".") + ". " + found[1]
     if len(summary) > 240:
         clipped = summary[:237]
         if " " in clipped:
             clipped = clipped.rsplit(" ", 1)[0]
         summary = clipped.rstrip(".,;:") + "…"
-    return summary or "Рабочая заметка по писательскому мастерству."
+    return summary
 
 
 def extract_exercises(body: str, parent_slug: str, used: set[str]) -> tuple[str, list[dict[str, str]]]:
@@ -144,16 +206,18 @@ def extract_exercises(body: str, parent_slug: str, used: set[str]) -> tuple[str,
                     break
                 index += 1
             block = "\n".join(lines[start:index]).strip()
-            title = exercise_title(text)
+            stripped = re.sub(r"^#{1,6}\s+.*(?:\n+|$)", "", block).strip()
+            stripped = re.sub(r"\n+---\s*$", "", stripped).strip()
+            title = exercise_title(text, stripped)
             slug = unique_slug(f"{parent_slug}-{title}", used)
             output.append(f":::exercise {slug}:::")
             exercises.append(
                 {
                     "title": title,
                     "slug": slug,
-                    "body": block,
+                    "body": stripped,
                     "order": str(sequence),
-                    "summary": first_paragraph(block),
+                    "summary": first_paragraph(stripped),
                 }
             )
             sequence += 1

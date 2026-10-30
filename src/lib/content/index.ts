@@ -37,4 +37,4 @@ export {
 
 export { collectionNav } from './labels'
 
-export { splitExerciseEmbeds } from './parse'
+export { splitExerciseEmbeds, stripLeadingHeading } from './parse'

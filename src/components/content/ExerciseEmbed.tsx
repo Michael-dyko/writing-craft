@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { entryPath, getEntry } from '@/lib/content'
+import { entryPath, getEntry, stripLeadingHeading } from '@/lib/content'
 import { MarkdownBody } from './MarkdownBody'
 import styles from './ExerciseEmbed.module.css'
 
@@ -17,8 +17,4 @@ export function ExerciseEmbed({ slug }: { slug: string }) {
       </Link>
     </section>
   )
-}
-
-function stripLeadingHeading(source: string): string {
-  return source.replace(/^#{1,6}\s+.*\n+/, '')
 }

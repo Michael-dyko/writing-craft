@@ -1,7 +1,20 @@
-import { Outlet } from 'react-router-dom'
+import { useLayoutEffect } from 'react'
+import { Outlet, ScrollRestoration, useLocation, useNavigationType } from 'react-router-dom'
 import { Footer } from './Footer'
 import { Header } from './Header'
 import styles from './Layout.module.css'
+
+function ResetScroll() {
+  const { pathname } = useLocation()
+  const action = useNavigationType()
+
+  useLayoutEffect(() => {
+    if (action === 'POP') return
+    window.scrollTo(0, 0)
+  }, [pathname, action])
+
+  return null
+}
 
 export function Layout() {
   return (
@@ -14,6 +27,8 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <ResetScroll />
+      <ScrollRestoration />
     </div>
   )
 }

@@ -112,6 +112,10 @@ export function embeddedExerciseSlugs(source: string): string[] {
   )
 }
 
+export function stripLeadingHeading(source: string): string {
+  return source.replace(/^#{1,6}\s+.*(?:\n+|$)/, '').trim()
+}
+
 export function asNumber(value: unknown): number | undefined {
   return typeof value === 'number' && Number.isFinite(value) ? value : undefined
 }

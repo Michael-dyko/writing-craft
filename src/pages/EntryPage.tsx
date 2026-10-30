@@ -11,6 +11,7 @@ import {
   getParentNote,
   getRelated,
   isCollectionId,
+  stripLeadingHeading,
 } from '@/lib/content'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { NotFoundPage } from './NotFoundPage'
@@ -45,11 +46,13 @@ export function EntryPage() {
       ) : null}
       <EntryAxes entry={entry} />
       <h1 className={styles.title}>{entry.title}</h1>
-      <p className={styles.summary}>{entry.summary}</p>
+      {entry.collection === 'notes' ? (
+        <p className={styles.summary}>{entry.summary}</p>
+      ) : null}
       {entry.collection === 'notes' ? (
         <NoteBody source={entry.body} />
       ) : (
-        <MarkdownBody source={entry.body} />
+        <MarkdownBody source={stripLeadingHeading(entry.body)} />
       )}
       <RelatedEntries
         entries={[...orphans, ...related.filter((item) => !orphans.some((orphan) => orphan.id === item.id))]}
