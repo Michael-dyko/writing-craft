@@ -117,6 +117,11 @@
   max-width: 100%;
 }
 
+.mark {
+  margin-right: 0.28rem;
+  font-size: 0.85em;
+}
+
 .rail:hover .link[data-level='3'] .label,
 .rail:focus-within .link[data-level='3'] .label {
   padding-left: 1.05rem;

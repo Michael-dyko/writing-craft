@@ -6,6 +6,7 @@ type Item = {
   id: string
   text: string
   level: 2 | 3 | 4
+  exercise: boolean
 }
 
 function collect(root: HTMLElement): Item[] {
@@ -34,7 +35,7 @@ function collect(root: HTMLElement): Item[] {
 
     used.add(id)
     const level = node.tagName === 'H4' ? 4 : node.tagName === 'H3' ? 3 : 2
-    items.push({ id, text, level })
+    items.push({ id, text, level, exercise: card !== null })
   }
 
   return items
@@ -135,9 +136,17 @@ export function PageOutline({
           href={`#${item.id}`}
           data-level={item.level}
           aria-current={item.id === active ? 'location' : undefined}
+          aria-label={item.exercise ? `Упражнение: ${item.text}` : undefined}
           onClick={(event) => jump(event, item.id)}
         >
-          <span className={styles.label}>{item.text}</span>
+          <span className={styles.label}>
+            {item.exercise ? (
+              <span className={styles.mark} aria-hidden="true">
+                ✏️
+              </span>
+            ) : null}
+            {item.text}
+          </span>
         </a>
       ))}
     </nav>
