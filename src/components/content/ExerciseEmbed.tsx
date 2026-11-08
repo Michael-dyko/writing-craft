@@ -8,7 +8,7 @@ export function ExerciseEmbed({ slug }: { slug: string }) {
   if (!exercise) return null
 
   return (
-    <section className={styles.card} aria-label={`Упражнение: ${exercise.title}`}>
+    <section className={styles.card} data-exercise="" aria-label={`Упражнение: ${exercise.title}`}>
       <p className={styles.kicker}>Упражнение</p>
       <h2 className={styles.title}>{exercise.title}</h2>
       <MarkdownBody source={stripLeadingHeading(exercise.body)} />

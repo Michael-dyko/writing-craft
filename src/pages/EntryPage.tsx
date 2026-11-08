@@ -1,7 +1,9 @@
+import { useRef } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { EntryAxes } from '@/components/content/EntryAxes'
 import { MarkdownBody } from '@/components/content/MarkdownBody'
 import { NoteBody } from '@/components/content/NoteBody'
+import { PageOutline } from '@/components/content/PageOutline'
 import { RelatedEntries } from '@/components/content/RelatedEntries'
 import {
   entryPath,
@@ -19,6 +21,7 @@ import styles from './EntryPage.module.css'
 
 export function EntryPage() {
   const { collectionId = '', slug = '' } = useParams()
+  const bodyRef = useRef<HTMLDivElement>(null)
   const valid = isCollectionId(collectionId)
   const entry = valid ? getEntry(collectionId, slug) : undefined
 
@@ -53,11 +56,14 @@ export function EntryPage() {
       {entry.collection === 'notes' ? (
         <p className={styles.summary}>{entry.summary}</p>
       ) : null}
-      {entry.collection === 'notes' ? (
-        <NoteBody source={entry.body} />
-      ) : (
-        <MarkdownBody source={stripLeadingHeading(entry.body)} />
-      )}
+      <div ref={bodyRef}>
+        {entry.collection === 'notes' ? (
+          <NoteBody source={entry.body} />
+        ) : (
+          <MarkdownBody source={stripLeadingHeading(entry.body)} />
+        )}
+      </div>
+      <PageOutline rootRef={bodyRef} entryId={entry.id} />
       <RelatedEntries
         entries={[...orphans, ...related.filter((item) => !orphans.some((orphan) => orphan.id === item.id))]}
       />

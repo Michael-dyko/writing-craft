@@ -33,6 +33,7 @@
   line-height: 1.2;
   margin-bottom: 0.85rem;
   overflow-wrap: anywhere;
+  scroll-margin-top: calc(var(--header) + 1.25rem);
 }
 
 .link {
