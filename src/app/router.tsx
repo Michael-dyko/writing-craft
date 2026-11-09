@@ -5,6 +5,7 @@ import { EntryPage } from '@/pages/EntryPage'
 import { HomePage } from '@/pages/HomePage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { SearchPage } from '@/pages/SearchPage'
+import { SitemapPage } from '@/pages/SitemapPage'
 
 export const router = createBrowserRouter(
   [
@@ -14,6 +15,7 @@ export const router = createBrowserRouter(
       children: [
         { index: true, element: <HomePage /> },
         { path: 'search', element: <SearchPage /> },
+        { path: 'map', element: <SitemapPage /> },
         { path: ':collectionId', element: <CollectionPage /> },
         { path: ':collectionId/:slug', element: <EntryPage /> },
         { path: '*', element: <NotFoundPage /> },

@@ -10,7 +10,7 @@ import {
   type TagAxisId,
   type TagAxisParam,
 } from './schema'
-import { slugify } from './slug'
+import { slugify, uniqueSlug } from './slug'
 
 export function getCollections(): CollectionMeta[] {
   return Object.values(COLLECTIONS)
@@ -101,6 +101,71 @@ export function getModules(): { name: string; count: number }[] {
   return [...counts.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => a.name.localeCompare(b.name, 'ru'))
+}
+
+export type SitemapNote = {
+  note: ContentEntry
+  exercises: ContentEntry[]
+}
+
+export type SitemapGroup = {
+  id: string
+  name: string
+  module: string | null
+  notes: SitemapNote[]
+}
+
+export function getSitemap(): { groups: SitemapGroup[]; loose: ContentEntry[] } {
+  const notes = getEntries('notes')
+  const noteIds = new Set(notes.map((note) => note.id))
+  const byParent = new Map<string, ContentEntry[]>()
+  const loose: ContentEntry[] = []
+
+  for (const exercise of getEntries('exercises')) {
+    const parent = exercise.parent
+    if (!parent || !noteIds.has(parent)) {
+      loose.push(exercise)
+      continue
+    }
+    const list = byParent.get(parent)
+    if (list) list.push(exercise)
+    else byParent.set(parent, [exercise])
+  }
+
+  const byModule = new Map<string, SitemapNote[]>()
+  const unassigned: SitemapNote[] = []
+
+  for (const note of notes) {
+    const item = { note, exercises: byParent.get(note.id) ?? [] }
+    if (!note.module) {
+      unassigned.push(item)
+      continue
+    }
+    const list = byModule.get(note.module)
+    if (list) list.push(item)
+    else byModule.set(note.module, [item])
+  }
+
+  const taken = new Set<string>()
+  const groups: SitemapGroup[] = [...byModule.entries()]
+    .sort(([a], [b]) => a.localeCompare(b, 'ru'))
+    .map(([name, moduleNotes]) => ({
+      id: uniqueSlug(name, taken),
+      name,
+      module: name,
+      notes: moduleNotes,
+    }))
+
+  if (unassigned.length > 0) {
+    groups.push({
+      id: uniqueSlug('Без модуля', taken),
+      name: 'Без модуля',
+      module: null,
+      notes: unassigned,
+    })
+  }
+
+  return { groups, loose }
 }
 
 export function getFeatured(limit = 5): ContentEntry[] {

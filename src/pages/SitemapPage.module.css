@@ -1,0 +1,203 @@
+.header {
+  margin-bottom: 1.6rem;
+  max-width: 40rem;
+}
+
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.45rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, var(--step-4));
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.description {
+  margin-top: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1rem;
+  margin-bottom: 1.3rem;
+}
+
+.pagesLabel {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pages ul,
+.modules ul,
+.notes,
+.exercises,
+.looseList {
+  list-style: none;
+}
+
+.pages ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.1rem;
+}
+
+.pages a {
+  font-family: var(--font-sans);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.pages a:hover {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+}
+
+.modules {
+  margin-bottom: 2.6rem;
+}
+
+.modules ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.modules a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--paper-raised);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+}
+
+.modules a:hover {
+  border-color: var(--ink);
+}
+
+.moduleCount {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.tree {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.4rem 3rem;
+  align-items: start;
+}
+
+.group {
+  min-width: 0;
+}
+
+.groupHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.groupTitle {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.groupTitle a {
+  text-decoration: none;
+}
+
+.groupTitle a:hover {
+  color: var(--accent);
+}
+
+.groupCount {
+  flex: none;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.notes {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.note > a {
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.note > a:hover {
+  color: var(--accent);
+}
+
+.exercises {
+  display: grid;
+  gap: 0.18rem;
+  margin-top: 0.35rem;
+  padding-left: 0.85rem;
+  border-left: 1px solid var(--rule);
+}
+
+.exercises a,
+.looseList a {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.exercises a:hover,
+.looseList a:hover {
+  color: var(--accent);
+}
+
+.loose {
+  grid-column: 1 / -1;
+}
+
+.looseList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem 2rem;
+}
+
+@media (max-width: 860px) {
+  .tree,
+  .looseList {
+    grid-template-columns: 1fr;
+  }
+}
