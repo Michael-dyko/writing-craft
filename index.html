@@ -2,6 +2,14 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      ;(function () {
+        var path = location.pathname
+        if (path.length > 1 && path.endsWith('/')) {
+          history.replaceState(null, '', path.slice(0, -1) + location.search + location.hash)
+        }
+      })()
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta

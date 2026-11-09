@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import { App } from './app/App'
 import './styles/base.css'
 
@@ -9,8 +9,14 @@ if (!root) {
   throw new Error('Не найден элемент #root')
 }
 
-createRoot(root).render(
+const app = (
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 )
+
+if (root.childElementCount > 0) {
+  hydrateRoot(root, app)
+} else {
+  createRoot(root).render(app)
+}
