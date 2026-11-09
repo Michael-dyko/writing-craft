@@ -28,6 +28,10 @@
   color: var(--ink-soft);
 }
 
+.random {
+  margin-top: 1.15rem;
+}
+
 .collections {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));

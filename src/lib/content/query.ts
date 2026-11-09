@@ -28,6 +28,12 @@ export function getEntries(collection: CollectionId): ContentEntry[] {
   return allEntries.filter((entry) => entry.collection === collection)
 }
 
+export function pickRandomExercise(exceptId?: string): ContentEntry | undefined {
+  const pool = getEntries('exercises').filter((entry) => entry.id !== exceptId)
+  if (pool.length === 0) return undefined
+  return pool[Math.floor(Math.random() * pool.length)]
+}
+
 export function getEntry(collection: CollectionId, slug: string): ContentEntry | undefined {
   return allEntries.find(
     (entry) =>

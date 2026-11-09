@@ -2,6 +2,7 @@ import { useLayoutEffect } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { AxisFilters } from '@/components/content/AxisFilters'
 import { EntryList } from '@/components/content/EntryList'
+import { RandomExerciseLink } from '@/components/content/RandomExerciseLink'
 import {
   axisFiltersFromSearch,
   canonicalizeAxisSearch,
@@ -44,6 +45,13 @@ export function CollectionPage() {
         <p className={styles.kicker}>Раздел</p>
         <h1 className={styles.title}>{collection.title}</h1>
         <p className={styles.description}>{collection.description}</p>
+        {collection.id === 'exercises' ? (
+          <RandomExerciseLink
+            className={styles.random}
+            entries={hasFilter ? entries : undefined}
+            label={hasFilter ? 'Случайное из списка' : 'Случайное упражнение'}
+          />
+        ) : null}
       </header>
 
       <AxisFilters collection={collection.id} />

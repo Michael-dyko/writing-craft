@@ -3,6 +3,15 @@
   margin: 0 auto;
 }
 
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem 1.2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+
 .back {
   display: inline-block;
   font-family: var(--font-sans);
@@ -10,6 +19,10 @@
   color: var(--ink-soft);
   text-decoration: none;
   margin-bottom: 1.2rem;
+}
+
+.toolbar .back {
+  margin-bottom: 0;
 }
 
 .back:hover {

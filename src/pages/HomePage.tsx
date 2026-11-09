@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { EntryList } from '@/components/content/EntryList'
+import { RandomExerciseLink } from '@/components/content/RandomExerciseLink'
 import { countByCollection, getCollections, getFeatured, getModules, slugify } from '@/lib/content'
 import { ruCount } from '@/lib/pluralize'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
@@ -20,6 +21,7 @@ export function HomePage() {
           Темы по модулям, с осями жанра, задачи и этапа работы. Упражнения живут
           отдельно, но остаются внутри теории.
         </p>
+        <RandomExerciseLink className={styles.random} />
       </section>
 
       <ul className={styles.collections}>

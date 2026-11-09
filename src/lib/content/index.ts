@@ -36,6 +36,7 @@ export {
   type SitemapGroup,
   type SitemapNote,
   getParentNote,
+  pickRandomExercise,
   getRelated,
   searchEntries,
 } from './query'

@@ -4,6 +4,7 @@ import { EntryAxes } from '@/components/content/EntryAxes'
 import { MarkdownBody } from '@/components/content/MarkdownBody'
 import { NoteBody } from '@/components/content/NoteBody'
 import { PageOutline } from '@/components/content/PageOutline'
+import { RandomExerciseLink } from '@/components/content/RandomExerciseLink'
 import { RelatedEntries } from '@/components/content/RelatedEntries'
 import {
   entryPath,
@@ -42,9 +43,18 @@ export function EntryPage() {
 
   return (
     <article className={styles.page}>
-      <Link className={styles.back} to={collection.path}>
-        ← {collection.title}
-      </Link>
+      {entry.collection === 'exercises' ? (
+        <div className={styles.toolbar}>
+          <Link className={styles.back} to={collection.path}>
+            ← {collection.title}
+          </Link>
+          <RandomExerciseLink exceptId={entry.id} />
+        </div>
+      ) : (
+        <Link className={styles.back} to={collection.path}>
+          ← {collection.title}
+        </Link>
+      )}
       {parent ? (
         <p className={styles.parent}>
           Из темы:{' '}

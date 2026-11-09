@@ -8,6 +8,7 @@ const PAGES = [
   { to: '/', label: 'Главная' },
   { to: '/notes', label: 'Темы' },
   { to: '/exercises', label: 'Упражнения' },
+  { to: '/random', label: 'Случайное упражнение' },
   { to: '/search', label: 'Поиск' },
 ] as const
 
