@@ -12,6 +12,7 @@ import {
   asNumber,
   asString,
   asStringArray,
+  embeddedExerciseSlugs,
   parseMarkdown,
 } from './parse'
 
@@ -103,6 +104,48 @@ function loadCatalog(): ContentEntry[] {
       throw new ContentError(`Дублируется id ${entry.id}: ${previous} и ${entry.sourcePath}`)
     }
     slugs.set(entry.id, entry.sourcePath)
+  }
+
+  const byId = new Map(entries.map((entry) => [entry.id, entry]))
+  const exercisesBySlug = new Map(
+    entries
+      .filter((entry) => entry.collection === 'exercises')
+      .map((entry) => [entry.slug, entry]),
+  )
+
+  for (const entry of entries) {
+    if (entry.collection === 'exercises') {
+      if (!entry.parent) {
+        throw new ContentError(`${entry.sourcePath}: упражнению нужно поле parent`)
+      }
+      const parent = byId.get(entry.parent)
+      if (!parent || parent.collection !== 'notes') {
+        throw new ContentError(
+          `${entry.sourcePath}: не найдена родительская тема «${entry.parent}»`,
+        )
+      }
+    }
+
+    for (const relatedId of entry.related) {
+      if (!byId.has(relatedId) && !entries.some((item) => item.slug === relatedId)) {
+        throw new ContentError(`${entry.sourcePath}: не найдена связанная запись «${relatedId}»`)
+      }
+    }
+
+    if (entry.collection !== 'notes') continue
+    for (const exerciseSlug of embeddedExerciseSlugs(entry.body)) {
+      const exercise = exercisesBySlug.get(exerciseSlug)
+      if (!exercise) {
+        throw new ContentError(
+          `${entry.sourcePath}: не найдено встроенное упражнение «${exerciseSlug}»`,
+        )
+      }
+      if (exercise.parent !== entry.id) {
+        throw new ContentError(
+          `${entry.sourcePath}: упражнение «${exerciseSlug}» ссылается на «${exercise.parent}»`,
+        )
+      }
+    }
   }
 
   const urlSlugs = new Map<CollectionId, Set<string>>()
